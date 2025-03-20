@@ -1,3 +1,3 @@
-defmodule ExGraphs.Graph.Graph do
-  
+defmodule ExGraphs.Graph do
+
 end

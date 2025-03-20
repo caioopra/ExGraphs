@@ -1,10 +1,13 @@
-defmodule ExGraphs.Graph.Vertex do
-  @enforce_keys [:index]
+defmodule ExGraphs.Vertex do
+  @moduledoc """
+  A struct representing a vertex in a graph.
+  """
+  @enforce_keys [:index, :label]
   defstruct [:index, :label, :neighbors, :degree]
 
-  def add_neighbor(vertex, neighbor) do
-    add_neighbor_to_vertex(vertex, neighbor)
-    add_neighbor_to_vertex(neighbor, vertex)
+  def add_neighbor(%ExGraphs.Vertex{} = u, %ExGraphs.Vertex{} = v) do
+    add_neighbor_to_vertex(u, u)
+    add_neighbor_to_vertex(v, v)
   end
 
   defp add_neighbor_to_vertex(vertex, neighbor) do
