@@ -13,6 +13,7 @@ defmodule ExGraphs.Edge do
 
   @doc """
   Creates an edge unidrected edge between two vertices.
+
   Returns:
     - `{:ok, edge, u, v}` if the edge was successfully created.
     - `{:error, u, v}` if the vertices are the same or already has an edge between them.

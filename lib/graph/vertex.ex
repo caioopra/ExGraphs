@@ -1,12 +1,18 @@
 defmodule ExGraphs.Vertex do
   @moduledoc """
   A struct representing a vertex in a graph.
+
+  Example of creation of a vertex:
+    vertex = %Vertex{index: 1, label: "A"}
+
+  The neighbors and degree fields shouldn't be set manually, instead use the appropriate methods for adding/removing neighbors.
   """
   @enforce_keys [:index, :label]
   defstruct [:index, :label, neighbors: [], degree: 0]
 
   @doc """
   Adds an undirected edge between two vertices.
+
   Returns:
   - `{:ok, updated_u, updated_v}` if the edge was successfully added.
   - `{:error, u, v}` if they are already neighbors or the same vertex.
