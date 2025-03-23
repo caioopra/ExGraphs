@@ -10,6 +10,13 @@ defmodule ExGraphs.Vertex do
   @enforce_keys [:index, :label]
   defstruct [:index, :label, neighbors: [], degree: 0]
 
+  @type t :: %__MODULE__{
+          index: integer(),
+          label: String.t(),
+          neighbors: [integer()],
+          degree: integer()
+        }
+
   @doc """
   Adds an undirected edge between two vertices.
 
