@@ -6,7 +6,7 @@ defmodule ExGraphs.Graph do
     - vertices: a map of vertices in the graph (index of the vertex as key).
     - edges: a map of edges in the graph ((u.index, v.index) as key).
   """
-  defstruct [:vertices, :edges]
+  defstruct vertices: %{}, edges: %{}
 
   @type t :: %__MODULE__{
           vertices: %{integer() => ExGraphs.Vertex.t()},
