@@ -11,6 +11,15 @@ defmodule ExGraphs.Edge do
   @enforce_keys [:u, :v]
   defstruct [:u, :v, :weight]
 
+  @type t :: %__MODULE__{
+          u: Vertex.t(),
+          v: Vertex.t(),
+          weight: number()
+        }
+
+  @spec create_edge(ExGraphs.Vertex.t(), ExGraphs.Vertex.t()) ::
+          {:error, ExGraphs.Vertex.t(), ExGraphs.Vertex.t()}
+          | {:ok, ExGraphs.Edge.t(), ExGraphs.Vertex.t(), ExGraphs.Vertex.t()}
   @doc """
   Creates an edge unidrected edge between two vertices.
 
