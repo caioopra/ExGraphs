@@ -57,4 +57,11 @@ defmodule ExGraphs.Graph do
   def create_vertex(%ExGraphs.Graph{} = graph, index) do
     create_vertex(graph, index, to_string(index))
   end
+
+  # getting usefull information about vertices and edges
+  def vertices_amount(%ExGraphs.Graph{vertices: vertices} = _graph) do
+    vertices
+    |> Map.keys()
+    |> Enum.count()
+  end
 end

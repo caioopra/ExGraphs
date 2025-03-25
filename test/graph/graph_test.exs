@@ -38,5 +38,29 @@ defmodule ExGraphsTest.GraphTest do
       assert graph.vertices == %{1 => vertex}
       assert graph.edges == %{}
     end
+
+    test "create_vertex/2 creating new vertex successfully" do
+      graph = %Graph{}
+
+      {status, graph} =
+        graph
+        |> Graph.create_vertex(1, "Test")
+
+      assert status == :ok
+      assert ExGraphs.Graph.vertices_amount(graph) == 1
+    end
+
+    test "create_vertex/1 should create new vertex with default label equal to index" do
+      graph = %Graph{}
+
+      {status, graph} =
+        graph
+        |> Graph.create_vertex(1)
+
+      assert status == :ok
+      assert ExGraphs.Graph.vertices_amount(graph) == 1
+      assert Map.get(graph.vertices, 1).label == "1"
+
+    end
   end
 end
