@@ -11,13 +11,15 @@ defmodule ExGraphs.Graph do
   """
   defstruct vertices: %{}, edges: %{}
 
+  alias ExGraphs.{Vertex, Edge, Graph}
+
   @type t :: %__MODULE__{
-          vertices: %{integer() => ExGraphs.Vertex.t()},
-          edges: %{integer() => ExGraphs.Edge.t()}
+          vertices: %{integer() => Vertex.t()},
+          edges: %{integer() => Edge.t()}
         }
 
-  @spec insert_vertex(%ExGraphs.Graph{}, ExGraphs.Vertex.t()) ::
-          {:ok, %ExGraphs.Graph{}} | {:error, %ExGraphs.Graph{}}
+  @spec insert_vertex(Graph.t(), Vertex.t()) ::
+          {:ok, Graph.t()} | {:error, Graph.t()}
   @doc """
   Inserts a vertex into the graph. If the vertex already exists, returns an error.
 
@@ -25,20 +27,20 @@ defmodule ExGraphs.Graph do
     - `{:ok, updated_graph}` if the vertex was successfully added.
     - `{:error, graph}` if the vertex already exists.
   """
-  def insert_vertex(%ExGraphs.Graph{} = graph, %ExGraphs.Vertex{} = vertex) do
+  def insert_vertex(%Graph{} = graph, %Vertex{} = vertex) do
     cond do
       Map.has_key?(graph.vertices, vertex.index) ->
         {:error, graph}
 
       true ->
         updated_vertices = Map.put(graph.vertices, vertex.index, vertex)
-        {:ok, %ExGraphs.Graph{graph | vertices: updated_vertices}}
+        {:ok, %Graph{graph | vertices: updated_vertices}}
     end
   end
 
-  @spec create_vertex(ExGraphs.Graph.t(), integer(), String.t()) ::
-          {:ok, %ExGraphs.Graph{edges: term(), vertices: term()}}
-          | {:error, %ExGraphs.Graph{edges: term(), vertices: term()}}
+  @spec create_vertex(Graph.t(), integer(), String.t()) ::
+          {:ok, Graph.t()}
+          | {:error, Graph.t()}
   @doc """
   Inserts an edge into the graph. If the edge already exists, returns an error.
 
@@ -46,21 +48,35 @@ defmodule ExGraphs.Graph do
     - `{:ok, updated_graph}` if the vertex was successfully addded
     - `{:error, graph}` if couldn't insert it
   """
-  def create_vertex(%ExGraphs.Graph{} = graph, index, label) do
-    vertex = %ExGraphs.Vertex{index: index, label: label}
+  def create_vertex(%Graph{} = graph, index, label) do
+    vertex = %Vertex{index: index, label: label}
     insert_vertex(graph, vertex)
   end
 
-  @spec create_vertex(ExGraphs.Graph.t(), integer()) ::
-          {:ok, %ExGraphs.Graph{edges: term(), vertices: term()}}
-          | {:error, %ExGraphs.Graph{edges: term(), vertices: term()}}
-  def create_vertex(%ExGraphs.Graph{} = graph, index) do
+  @spec create_vertex(Graph.t(), integer()) ::
+          {:ok, Graph.t()}
+          | {:error, Graph.t()}
+  def create_vertex(%Graph{} = graph, index) do
     create_vertex(graph, index, to_string(index))
   end
 
   # getting usefull information about vertices and edges
-  def vertices_amount(%ExGraphs.Graph{vertices: vertices} = _graph) do
+  @spec vertices_amount(Graph.t()) :: non_neg_integer()
+  @doc """
+  Gets the amount of vertices in the graph.
+  """
+  def vertices_amount(%Graph{vertices: vertices} = _graph) do
     vertices
+    |> Map.keys()
+    |> Enum.count()
+  end
+
+  @spec edges_amount(Graph.t()) :: non_neg_integer()
+  @doc """
+  Gets the amount of edges in the graph.
+  """
+  def edges_amount(%Graph{edges: edges} = _graph) do
+    edges
     |> Map.keys()
     |> Enum.count()
   end

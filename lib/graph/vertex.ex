@@ -17,6 +17,8 @@ defmodule ExGraphs.Vertex do
           degree: integer()
         }
 
+  alias ExGraphs.{Vertex}
+
   @doc """
   Adds an undirected edge between two vertices.
 
@@ -24,7 +26,7 @@ defmodule ExGraphs.Vertex do
   - `{:ok, updated_u, updated_v}` if the edge was successfully added.
   - `{:error, u, v}` if they are already neighbors or the same vertex.
   """
-  def add_neighbor(%ExGraphs.Vertex{} = u, %ExGraphs.Vertex{} = v) do
+  def add_neighbor(%Vertex{} = u, %Vertex{} = v) do
     cond do
       # prevent self-loops
       u.index == v.index ->
@@ -40,10 +42,10 @@ defmodule ExGraphs.Vertex do
     end
   end
 
-  defp update_neighbors(%ExGraphs.Vertex{} = u, %ExGraphs.Vertex{} = v) do
-    updated_u = %ExGraphs.Vertex{u | neighbors: [v.index | u.neighbors], degree: u.degree + 1}
+  defp update_neighbors(%Vertex{} = u, %Vertex{} = v) do
+    updated_u = %Vertex{u | neighbors: [v.index | u.neighbors], degree: u.degree + 1}
 
-    updated_v = %ExGraphs.Vertex{v | neighbors: [u.index | v.neighbors], degree: v.degree + 1}
+    updated_v = %Vertex{v | neighbors: [u.index | v.neighbors], degree: v.degree + 1}
 
     {updated_u, updated_v}
   end

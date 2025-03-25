@@ -6,7 +6,7 @@ defmodule ExGraphs.Edge do
     %Edge{u: u, v: v, weight: weight}
     # where u and v are vertices and weight is the weight of the edge (optional).
   """
-  alias ExGraphs.Vertex
+  alias ExGraphs.{Vertex, Edge}
 
   @enforce_keys [:u, :v]
   defstruct [:u, :v, :weight]
@@ -17,9 +17,9 @@ defmodule ExGraphs.Edge do
           weight: number()
         }
 
-  @spec create_edge(ExGraphs.Vertex.t(), ExGraphs.Vertex.t()) ::
-          {:error, ExGraphs.Vertex.t(), ExGraphs.Vertex.t()}
-          | {:ok, ExGraphs.Edge.t(), ExGraphs.Vertex.t(), ExGraphs.Vertex.t()}
+  @spec create_edge(Vertex.t(), Vertex.t()) ::
+          {:error, Vertex.t(), Vertex.t()}
+          | {:ok, Edge.t(), Vertex.t(), Vertex.t()}
   @doc """
   Creates an edge unidrected edge between two vertices.
 
@@ -27,11 +27,11 @@ defmodule ExGraphs.Edge do
     - `{:ok, edge, u, v}` if the edge was successfully created.
     - `{:error, u, v}` if the vertices are the same or already has an edge between them.
   """
-  def create_edge(%ExGraphs.Vertex{} = u, %ExGraphs.Vertex{} = v, weight \\ 1) do
+  def create_edge(%Vertex{} = u, %Vertex{} = v, weight \\ 1) do
     {status, u, v} = Vertex.add_neighbor(u, v)
 
     case status do
-      :ok -> {:ok, %ExGraphs.Edge{u: u, v: v, weight: weight}, u, v}
+      :ok -> {:ok, %Edge{u: u, v: v, weight: weight}, u, v}
       :error -> {:error, u, v}
     end
   end
