@@ -60,6 +60,38 @@ defmodule ExGraphs.Graph do
     create_vertex(graph, index, to_string(index))
   end
 
+  @doc """
+  Create and insert an Edge into the graph when the vertices are already in the graph.
+  """
+  def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v) do
+    if vertex_in_graph?(graph, u.index) and vertex_in_graph?(graph, v.index) do
+      case Edge.create_edge(u, v) do
+        {:ok, edge, u, v} ->
+          insert_edge(graph, edge)
+          |> then(&{:ok, &1, u, v})
+
+        {:error, _, u, v} ->
+          {:error, graph, u, v}
+      end
+    else
+      {:error, graph, u, v}
+    end
+  end
+
+  @doc """
+  Inserts an edge into the graph. If the edge already exists, returns an error.
+  Prefere using `create_edge/3` instead of this function.
+  """
+  def insert_edge(%Graph{} = graph, %Edge{} = edge) do
+    key = {edge.u.index, edge.v.index}
+
+    if Map.has_key?(graph.edges, key) do
+      {:error, graph}
+    else
+      {:ok, %Graph{graph | edges: Map.put(graph.edges, key, edge)}}
+    end
+  end
+
   # getting usefull information about vertices and edges
   @spec vertices_amount(Graph.t()) :: non_neg_integer()
   @doc """
@@ -80,4 +112,10 @@ defmodule ExGraphs.Graph do
     |> Map.keys()
     |> Enum.count()
   end
+
+  def vertex_in_graph?(%Graph{vertices: vertices}, index) when is_integer(index) do
+    Map.has_key?(vertices, index)
+  end
+
+  # def has_edge_between?(%Graph{edges})
 end
