@@ -32,7 +32,7 @@ defmodule ExGraphsTest.EdgeTest do
     test "Edge.create_edge/2 returns error when trying to create a self-loop" do
       v1 = %Vertex{index: 1, label: "A"}
 
-      assert {:error, v1, v1} = Edge.create_edge(v1, v1)
+      assert {:error, nil, v1, v1} = Edge.create_edge(v1, v1)
     end
 
     test "Edge.create_edge/2 returns error when creating an existing edge" do
@@ -41,7 +41,7 @@ defmodule ExGraphsTest.EdgeTest do
 
       {:ok, _edge, v1, v2} = Edge.create_edge(v1, v2)
 
-      assert {:error, ^v1, ^v2} = Edge.create_edge(v1, v2)
+      assert {:error, nil, ^v1, ^v2} = Edge.create_edge(v1, v2)
     end
   end
 end
