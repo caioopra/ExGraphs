@@ -63,18 +63,20 @@ defmodule ExGraphs.Graph do
   @doc """
   Create and insert an Edge into the graph when the vertices are already in the graph.
   """
-  def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v) do
-    if vertex_in_graph?(graph, u.index) and vertex_in_graph?(graph, v.index) do
-      case Edge.create_edge(u, v) do
-        {:ok, edge, u, v} ->
-          insert_edge(graph, edge)
-          |> then(&{:ok, &1, u, v})
-
-        {:error, _, u, v} ->
-          {:error, graph, u, v}
-      end
+  def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v, weight \\ 1) do
+    with true <- vertex_in_graph?(graph, u.index) and vertex_in_graph?(graph, v.index),
+         {:ok, edge, u, v} <- Edge.create_edge(u, v, weight),
+         {:ok, updated_graph} <- insert_edge(graph, edge) do
+      {:ok, updated_graph, u, v}
     else
-      {:error, graph, u, v}
+      false ->
+        {:error, graph, u, v}
+
+      {:error, _, u, v} ->
+        {:error, graph, u, v}
+
+      {:error, _} ->
+        {:error, graph, u, v}
     end
   end
 
@@ -118,4 +120,9 @@ defmodule ExGraphs.Graph do
   end
 
   # def has_edge_between?(%Graph{edges})
+
+  @spec get_vertex(Graph.t(), integer()) :: Vertex.t() | nil
+  def get_vertex(%Graph{vertices: vertices}, index) do
+    Map.get(vertices, index)
+  end
 end
