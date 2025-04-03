@@ -86,7 +86,7 @@ defmodule ExGraphsTest.GraphTest do
       {status, graph, u, v} = Graph.create_edge(graph, u, v)
 
       assert status == :ok
-      assert Map.has_key?(graph.edges, {1, 2})  # error here ?
+      assert Map.has_key?(graph.edges, {1, 2})
 
       assert u.degree == 1
       assert v.degree == 1
@@ -97,6 +97,16 @@ defmodule ExGraphsTest.GraphTest do
       vertex = %Vertex{index: 100, label: "Not in Graph"}
 
       {status, _graph, _u, _v} = Graph.create_edge(graph, u, vertex, weight: 5)
+
+      assert status == :error
+    end
+
+    test "create_edge/4 should fail when tries to duplicate an edge", %{graph: graph} do
+      u = Graph.get_vertex(graph, 1)
+      v = Graph.get_vertex(graph, 2)
+
+      {_status, graph, u, v} = Graph.create_edge(graph, u, v, weight: -5)
+      {status, _graph, _u, _v} = Graph.create_edge(graph, u, v, weight: -5)
 
       assert status == :error
     end
