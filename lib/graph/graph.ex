@@ -64,19 +64,20 @@ defmodule ExGraphs.Graph do
   Create and insert an Edge into the graph when the vertices are already in the graph.
   """
   def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v, weight \\ 1) do
-    with true <- vertex_in_graph?(graph, u.index) and vertex_in_graph?(graph, v.index),
-         {:ok, edge, u, v} <- Edge.create_edge(u, v, weight),
-         {:ok, updated_graph} <- insert_edge(graph, edge) do
-      {:ok, updated_graph, u, v}
-    else
-      false ->
+    cond do
+      # check if the vertices are already in the graph
+      not vertex_in_graph?(graph, u.index)or not vertex_in_graph?(graph, v.index) ->
         {:error, graph, u, v}
+      # check if the edge already exists
+      Map.has_key?(graph.edges, {u.index, v.index}) ->
+        {:error, graph, u, v}
+      # else, create the edge
+      true ->
+        {:ok, edge, u, v} = Edge.create_edge(u, v, weight)
 
-      {:error, _, u, v} ->
-        {:error, graph, u, v}
+        {:ok, updated_graph} = insert_edge(graph, edge)
 
-      {:error, _} ->
-        {:error, graph, u, v}
+        {:ok, updated_graph, u, v}
     end
   end
 
