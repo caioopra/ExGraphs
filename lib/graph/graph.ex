@@ -66,11 +66,13 @@ defmodule ExGraphs.Graph do
   def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v, weight \\ 1) do
     cond do
       # check if the vertices are already in the graph
-      not vertex_in_graph?(graph, u.index)or not vertex_in_graph?(graph, v.index) ->
+      not vertex_in_graph?(graph, u.index) or not vertex_in_graph?(graph, v.index) ->
         {:error, graph, u, v}
+
       # check if the edge already exists
-      Map.has_key?(graph.edges, {u.index, v.index}) ->
+      has_edge?(graph, u, v) ->
         {:error, graph, u, v}
+
       # else, create the edge
       true ->
         {:ok, edge, u, v} = Edge.create_edge(u, v, weight)
@@ -120,7 +122,20 @@ defmodule ExGraphs.Graph do
     Map.has_key?(vertices, index)
   end
 
-  # def has_edge_between?(%Graph{edges})
+  # TODO: this is considering that the graph is undirected; if the graph is directed, this function should be changed
+  @spec has_edge?(Graph.t(), Vertex.t(), Vertex.t()) :: boolean()
+  def has_edge?(
+        %Graph{edges: edges} = _graph,
+        %Vertex{index: u_index} = _u,
+        %Vertex{index: v_index} = _v
+      ) do
+    Map.has_key?(edges, {u_index, v_index}) or Map.has_key?(edges, {v_index, u_index})
+  end
+
+  @spec has_edge?(Graph.t(), integer(), integer()) :: boolean()
+  def has_edge?(%Graph{edges: edges} = _graph, u_index, v_index) do
+    Map.has_key?(edges, {u_index, v_index}) or Map.has_key?(edges, {v_index, u_index})
+  end
 
   @spec get_vertex(Graph.t(), integer()) :: Vertex.t() | nil
   def get_vertex(%Graph{vertices: vertices}, index) do
