@@ -60,10 +60,13 @@ defmodule ExGraphs.Graph do
     create_vertex(graph, index, to_string(index))
   end
 
+  # TODO: this function shouuld update the Vertice structs, but it doesn't, so even though the edges map is right, the vertices one has the "old" Vertices
   @doc """
   Create and insert an Edge into the graph when the vertices are already in the graph.
   """
-  def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v, weight \\ 1) do
+  def create_edge(graph, u, v, weight \\ 1)
+
+  def create_edge(%Graph{} = graph, %Vertex{} = u, %Vertex{} = v, weight) do
     cond do
       # check if the vertices are already in the graph
       not vertex_in_graph?(graph, u.index) or not vertex_in_graph?(graph, v.index) ->
@@ -73,14 +76,20 @@ defmodule ExGraphs.Graph do
       has_edge?(graph, u, v) ->
         {:error, graph, u, v}
 
-      # else, create the edge
+      # else, creates the edge
       true ->
         {:ok, edge, u, v} = Edge.create_edge(u, v, weight)
-
         {:ok, updated_graph} = insert_edge(graph, edge)
-
         {:ok, updated_graph, u, v}
     end
+  end
+
+  def create_edge(%Graph{} = graph, u_index, v_index, weight)
+      when is_integer(u_index) and is_integer(v_index) do
+    u = get_vertex(graph, u_index)
+    v = get_vertex(graph, v_index)
+
+    create_edge(graph, u, v, weight)
   end
 
   @doc """
