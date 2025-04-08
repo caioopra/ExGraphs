@@ -52,6 +52,13 @@ defmodule ExGraphs.Utils do
     {vertices_lines, edges_information} = Enum.split(lines, vertices_amount)
     # removes the line with the edges information
     edges_lines = Enum.drop(edges_information, 1)
+
+    graph = %Graph{}
+
+    graph
+    |> parse_vertices(vertices_lines)
+    |> parse_edges(edges_lines)
+    |> dbg()
   end
 
   defp get_amount_of_vertices(lines) do
@@ -60,5 +67,35 @@ defmodule ExGraphs.Utils do
     |> String.split(" ")
     |> Enum.at(1)
     |> String.to_integer()
+  end
+
+  defp parse_vertices(%Graph{} = graph, lines) do
+    Enum.reduce(lines, graph, fn line, curr_graph ->
+      [id, label | _] = String.split(line, ~r/\s+/, trim: true)
+      id = String.to_integer(id)
+
+      label = String.trim(label)
+
+      {:ok, graph} = Graph.create_vertex(curr_graph, id, label)
+
+      graph
+    end)
+  end
+
+  defp parse_edges(%Graph{} = graph, lines) do
+    Enum.reduce(lines, graph, fn line, curr_graph ->
+      [u_index, v_index, weight | _] = String.split(line, ~r/\s+/, trim: true)
+      u_index = String.to_integer(u_index)
+      v_index = String.to_integer(v_index)
+      weight = String.to_float(weight)
+
+      IO.puts("\nu_index: #{u_index}, v_index: #{v_index}, weight: #{weight}")
+
+      {:ok, graph, _, _} = Graph.create_edge(curr_graph, u_index, v_index, weight)
+
+      IO.puts("Graph after adding edge: #{inspect(graph)}")
+
+      graph
+    end)
   end
 end
