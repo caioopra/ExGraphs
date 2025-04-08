@@ -78,9 +78,16 @@ defmodule ExGraphs.Graph do
 
       # else, creates the edge
       true ->
-        {:ok, edge, u, v} = Edge.create_edge(u, v, weight)
-        {:ok, updated_graph} = insert_edge(graph, edge)
-        {:ok, updated_graph, u, v}
+        {:ok, edge, updated_u, updated_v} = Edge.create_edge(u, v, weight)
+
+        updated_vertices = graph.vertices
+        |> Map.put(u.index, updated_u)
+        |> Map.put(v.index, updated_v)
+
+        temp_graph = %Graph{graph | vertices: updated_vertices}
+
+        {:ok, updated_graph} = insert_edge(temp_graph, edge)
+        {:ok, updated_graph, updated_u, updated_v}
     end
   end
 
