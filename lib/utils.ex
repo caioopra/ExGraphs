@@ -21,16 +21,18 @@ defmodule ExGraphs.Utils do
 
   ## Examples
 
-      iex> ExGraphs.Utils.read_graph(%{vertices: %{1 => :a, 2 => :b}})
-      2
+      iex> ExGraphs.Utils.read_graph("path/to/file")
+      {:ok, %Graph{:vertices: [...], :edges: [...]}}
 
-      iex> ExGraphs.Utils.read_graph(%{vertices: %{}})
-      0
+      iex> ExGraphs.Utils.read_graph("path/to/not/existent/file")
+      {:error, reason}
   """
   def read_graph(path) when is_binary(path) do
     case File.read(path) do
       {:ok, content} ->
-        parse_content(content)
+        graph = parse_content(content)
+
+        {:ok, graph}
 
       {:error, reason} ->
         IO.puts("Error reading file: #{reason}")
@@ -58,7 +60,6 @@ defmodule ExGraphs.Utils do
     graph
     |> parse_vertices(vertices_lines)
     |> parse_edges(edges_lines)
-    |> dbg()
   end
 
   defp get_amount_of_vertices(lines) do
@@ -89,11 +90,7 @@ defmodule ExGraphs.Utils do
       v_index = String.to_integer(v_index)
       weight = String.to_float(weight)
 
-      IO.puts("\nu_index: #{u_index}, v_index: #{v_index}, weight: #{weight}")
-
       {:ok, graph, _, _} = Graph.create_edge(curr_graph, u_index, v_index, weight)
-
-      IO.puts("Graph after adding edge: #{inspect(graph)}")
 
       graph
     end)
