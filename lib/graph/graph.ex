@@ -60,7 +60,6 @@ defmodule ExGraphs.Graph do
     create_vertex(graph, index, to_string(index))
   end
 
-  # TODO: this function shouuld update the Vertice structs, but it doesn't, so even though the edges map is right, the vertices one has the "old" Vertices
   @doc """
   Create and insert an Edge into the graph when the vertices are already in the graph.
   """
