@@ -81,26 +81,32 @@ defmodule Structures.Stack do
     false
   end
 
+  @spec from_list(list()) :: t()
   def from_list(list) do
     %__MODULE__{stack: list}
   end
 
+  @spec to_list(t()) :: list()
   def to_list(%__MODULE__{stack: stack}) do
     stack
   end
 
+  @spec size(t()) :: non_neg_integer()
   def size(%__MODULE__{stack: stack}) do
     length(stack)
   end
 
+  @spec new() :: t()
   def new() do
     %__MODULE__{}
   end
 
+  @spec new(list()) :: t()
   def new(list) when is_list(list) do
     %__MODULE__{stack: list}
   end
 
+  @spec new(any()) :: no_return()
   def new(other) do
     raise ArgumentError, "Expected a list, got: #{inspect(other)}"
   end
