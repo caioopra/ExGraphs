@@ -1,7 +1,7 @@
 defmodule ExGraphsTest.UtilsTest do
   use ExUnit.Case
 
-  alias ExGraphs.{Vertex, Graph, Utils}
+  alias ExGraphs.{Graph, Utils}
 
   describe "read_graph/1" do
     test "successfully reads a graph from a .net file" do
