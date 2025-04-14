@@ -79,9 +79,10 @@ defmodule ExGraphs.Graph do
       true ->
         {:ok, edge, updated_u, updated_v} = Edge.create_edge(u, v, weight)
 
-        updated_vertices = graph.vertices
-        |> Map.put(u.index, updated_u)
-        |> Map.put(v.index, updated_v)
+        updated_vertices =
+          graph.vertices
+          |> Map.put(u.index, updated_u)
+          |> Map.put(v.index, updated_v)
 
         temp_graph = %Graph{graph | vertices: updated_vertices}
 
@@ -155,5 +156,19 @@ defmodule ExGraphs.Graph do
   @spec get_vertex(Graph.t(), integer()) :: Vertex.t() | nil
   def get_vertex(%Graph{vertices: vertices}, index) do
     Map.get(vertices, index)
+  end
+
+  def neighbors(%Graph{vertices: vertices} = _graph, index) do
+    case Map.get(vertices, index) do
+      nil ->
+        {:error, :vertex_not_found}
+
+      %Vertex{neighbors: neighbors} ->
+        {:ok, neighbors}
+    end
+  end
+
+  def neighbors(%Graph{vertices: vertices} = _graph, %Vertex{index: index} = _vertex) do
+    neighbors(vertices, index)
   end
 end
